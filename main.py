@@ -8,9 +8,17 @@ from pushnotify import PushMessage
 load_dotenv()
 
 YEARS = os.environ.get('YEARS').split(',')
+YEARS.sort()
 URL = "https://user-api.coronatest.nl/vaccinatie/programma/bepaalbaar/YEAR/NEE/NEE"
 GOTIFY_KEY = os.environ.get("GOTIFY_KEY")
 GOTIFY_URL = os.environ.get("GOTIFY_URL")
+
+def send_push_message(year: int):
+    msg_title= "Corona vaccination available!"
+    msg_content = f"The Coronatest for {str(year)} is available!"
+    push = PushMessage(GOTIFY_URL, GOTIFY_KEY)
+    push.post_msg(msg_title, msg_content, 10)
+    logger.info(f"Year {str(year)} available, notification send ")
 
 def main():
     for year in YEARS:
@@ -21,11 +29,10 @@ def main():
             data = response.json()
             logger.debug(f"Response JSON: {data}")
             if data['success'] == True:
-                msg_title= "Corona vaccination available!"
-                msg_content = f"The Coronatest for {str(year)} is available!"
-                push = PushMessage(GOTIFY_URL, GOTIFY_KEY)
-                push.post_msg(msg_title, msg_content, 10)
-                logger.info(f"Year {str(year)} available, notification send ")
+                send_push_message(year)                
+                # Remove first item from sorted YEARS-list to prevent sending
+                # of multiple notifications
+                YEARS.pop(0) 
             else:
                 logger.info(f"Year {str(year)} not available")
         else:
