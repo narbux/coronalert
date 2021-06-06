@@ -34,7 +34,7 @@ def main():
                 # of multiple notifications
                 YEARS.pop(0) 
             else:
-                logger.info(f"Year {str(year)} not available")
+                logger.debug(f"Year {str(year)} not available")
         else:
             logger.error(response.status_code, response.text)
 
