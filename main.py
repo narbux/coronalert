@@ -22,6 +22,8 @@ def send_push_message(year: int):
 
 def main():
     for year in YEARS:
+        if year == None or year == "":
+            return False
         r_URL = URL.replace("YEAR", str(year))
         logger.debug(f"Trying {r_URL} for year {str(year)}")
         response = requests.get(r_URL)
@@ -33,10 +35,13 @@ def main():
                 # Remove first item from sorted YEARS-list to prevent sending
                 # of multiple notifications
                 YEARS.pop(0) 
+                return True
             else:
                 logger.debug(f"Year {str(year)} not available")
+                return True
         else:
             logger.error(response.status_code, response.text)
+            return False
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
@@ -48,7 +53,8 @@ if __name__ == "__main__":
     try:
         while True:
             logger.info("Starting program")
-            main()
+            if not main():
+                break
             sleep(120)
     except KeyboardInterrupt:
         logger.info("Exiting program")
