@@ -15,7 +15,7 @@ GOTIFY_URL = os.environ.get("GOTIFY_URL")
 
 def send_push_message(year: int):
     msg_title= "Corona vaccination available!"
-    msg_content = f"The Coronatest for {str(year)} is available!"
+    msg_content = f"The Corona vaccination for {str(year)} is available!"
     push = PushMessage(GOTIFY_URL, GOTIFY_KEY)
     push.post_msg(msg_title, msg_content, 10)
     logger.info(f"Year {str(year)} available, notification send ")
